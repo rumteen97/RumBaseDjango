@@ -5,7 +5,7 @@ BASE_DIR: Path = Path(__file__).resolve().parent.parent.parent
 env = Env()
 env.read_env()
 
-LANGUAGE_CODE = "fa-IR"
+# LANGUAGE_CODE = "fa-IR"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
@@ -17,7 +17,8 @@ AUTH_USER_MODEL = "users.User"
 X_FRAME_OPTIONS = "SAMEORIGIN"
 
 LANGUAGES = [
-    ('fa', 'Persian'),
+    # ('fa', 'Persian'),
+    ('en', 'English'),
 ]
 
 LOCALE_PATHS = [
@@ -39,6 +40,17 @@ CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
 APPEND_SLASH = True
 
 INSTALLED_APPS = [
+    "unfold",  # before django.contrib.admin
+    "unfold.contrib.filters",  # optional, if special filters are needed
+    "unfold.contrib.forms",  # optional, if special form elements are needed
+    "unfold.contrib.inlines",  # optional, if special inlines are needed
+    # "unfold.contrib.import_export",  # optional, if django-import-export package is used
+    # "unfold.contrib.guardian",  # optional, if django-guardian package is used
+    # "unfold.contrib.simple_history",  # optional, if django-simple-history package is used
+    # "unfold.contrib.location_field",  # optional, if django-location-field package is used
+    # "unfold.contrib.constance",  # optional, if django-constance package is used
+    # "unfold.contrib.hijack",  # optional, if django-hijack package is used
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.sessions',
@@ -46,9 +58,19 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.contenttypes',
 
-    'auditlog',
-    'django_filters',
-    'rest_framework',
+    'auditlog',  # required for django-auditlog
+    'django_filters',  # required for django-filter
+    'rest_framework',  # required for djangorestframework
+
+    'dj_control_room_base',  # Required: shared core library (provides dcr_icons template tags and design system)
+    'dj_redis_panel',  # If you installed [redis]
+    'dj_cache_panel',  # If you installed [cache]
+    'dj_urls_panel',  # If you installed [urls]
+    'dj_celery_panel',  # If you installed [celery]
+    'dj_signals_panel',  # If you installed [signals]
+    'dj_control_room',  # Django Control Room (list after panels so they appear in one section)
+
+    'django_celery_beat',
 
     'apps.core',
     'apps.users',
@@ -95,6 +117,17 @@ DATABASES = {
     }
 }
 
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": env.str("REDIS_LOCATION", default="redis://127.0.0.1:6379/"),
+        "OPTIONS": {
+            "SOCKET_CONNECT_TIMEOUT": 5,  # seconds
+            "SOCKET_TIMEOUT": 5,  # seconds
+        }
+    }
+}
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -124,3 +157,12 @@ REST_FRAMEWORK = {
 AUDITLOG_INCLUDE_ALL_MODELS = True
 AUDITLOG_USE_BASE_MANAGER = True
 AUDITLOG_STORE_JSON_CHANGES = True
+
+UNFOLD = {
+    "SITE_TITLE": "Rum Admin",
+    "SITE_HEADER": "Rum Django Admin",
+    "SITE_SUBHEADER": "Rum Django Admin",
+    "SITE_VERSION": "0.0.0",
+    "SHOW_BACK_BUTTON": True,  # show/hide "Back" button on changeform in header, default: False
+    "SHOW_UI_WARNINGS": True,  # show/hide warnings in UI, default: False
+}
