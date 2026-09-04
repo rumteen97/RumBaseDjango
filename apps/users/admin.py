@@ -10,10 +10,10 @@ class BaseAdmin(ModelAdmin):
 
     def get_readonly_fields(self, request, obj=None):
         base_readonly_fields = [
-            'created_at''',
-            'updated_at''',
-            'created_by''',
-            'updated_by''',
+            'created_at',
+            'updated_at',
+            'created_by',
+            'updated_by',
         ]  # Fields to be read-only for all models
         readonly_fields = list(base_readonly_fields) + list(self.readonly_fields)
         return readonly_fields
